@@ -1,0 +1,30 @@
+const { contextBridge, ipcRenderer } = require('electron');
+
+contextBridge.exposeInMainWorld('assistantApi', {
+  getConfig: () => ipcRenderer.invoke('app:config'),
+  getSkills: () => ipcRenderer.invoke('app:skills'),
+  importSkill: () => ipcRenderer.invoke('app:import-skill'),
+  readClipboard: () => ipcRenderer.invoke('clipboard:read'),
+  writeClipboard: (value) => ipcRenderer.invoke('clipboard:write', value),
+  getCaptureSources: () => ipcRenderer.invoke('capture:sources'),
+  startAutoCapture: (source) => ipcRenderer.invoke('capture:auto-start', source),
+  stopAutoCapture: () => ipcRenderer.invoke('capture:auto-stop'),
+  onAutoCaptureFrame: (callback) => ipcRenderer.on('auto-capture:frame', (_event, payload) => callback(payload)),
+  onAutoCaptureStatus: (callback) => ipcRenderer.on('auto-capture:status', (_event, payload) => callback(payload)),
+  complete: (payload) => ipcRenderer.invoke('ai:complete', payload),
+  judge: (payload) => ipcRenderer.invoke('ai:judge', payload),
+  testJev: () => ipcRenderer.invoke('jev:test'),
+  saveSettings: (payload) => ipcRenderer.invoke('settings:save', payload),
+  saveJevSettings: (payload) => ipcRenderer.invoke('settings:jev-save', payload),
+  setActiveMode: (modeId) => ipcRenderer.invoke('settings:active-mode', modeId),
+  saveModes: (payload) => ipcRenderer.invoke('settings:modes-save', payload),
+  createMode: (payload) => ipcRenderer.invoke('settings:mode-create', payload),
+  getWindowState: () => ipcRenderer.invoke('window:state'),
+  setAlwaysOnTop: (enabled) => ipcRenderer.invoke('window:always-on-top', enabled),
+  setCompact: (enabled) => ipcRenderer.invoke('window:compact', enabled),
+  minimize: () => ipcRenderer.send('window:minimize'),
+  maximize: () => ipcRenderer.send('window:maximize'),
+  hide: () => ipcRenderer.send('window:hide'),
+  quit: () => ipcRenderer.send('window:quit'),
+  onTrayCompact: (callback) => ipcRenderer.on('tray:compact', callback)
+});

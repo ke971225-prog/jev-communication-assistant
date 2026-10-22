@@ -1,0 +1,52 @@
+{
+  "name": "communication-assistant-portable",
+  "version": "0.1.0",
+  "author": "ke971225-prog",
+  "description": "Jev 辅助的本地优先 Windows 聊天翻译与回复助手（早期预览）",
+  "license": "MIT",
+  "homepage": "https://github.com/ke971225-prog/jev-communication-assistant#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ke971225-prog/jev-communication-assistant.git"
+  },
+  "bugs": {
+    "url": "https://github.com/ke971225-prog/jev-communication-assistant/issues"
+  },
+  "main": "src/main.js",
+  "type": "commonjs",
+  "scripts": {
+    "start": "electron .",
+    "check": "node --check src/main.js && node --check src/preload.js && node --check src/renderer.js",
+    "test": "npm run check",
+    "dist": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts\\dist-preserve-data.ps1"
+  },
+  "build": {
+    "appId": "com.local.communicationassistant",
+    "productName": "沟通助手",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "src/**/*",
+      "assets/**/*",
+      "skills/**/*",
+      "package.json",
+      "README.md",
+      "ROADMAP.md",
+      "LICENSE"
+    ],
+    "win": {
+      "target": [
+        "portable"
+      ],
+      "icon": "assets/icon.ico"
+    },
+    "portable": {
+      "artifactName": "沟通助手-Portable-${version}.${ext}"
+    }
+  },
+  "devDependencies": {
+    "electron": "44.4.5",
+    "electron-builder": "26.15.3"
+  }
+}

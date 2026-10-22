@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>沟通助手</title>
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <div class="titlebar" aria-label="窗口控制栏">
+    <div class="titlebar-brand"><img src="../assets/icon.svg" alt="沟通助手图标" /><span>沟通助手</span><span class="titlebar-version">本地便携版</span></div>
+    <div class="window-actions">
+      <button id="btnMinimize" class="window-btn" aria-label="最小化">—</button>
+      <button id="btnMaximize" class="window-btn" aria-label="最大化">□</button>
+      <button id="btnHide" class="window-btn close" aria-label="隐藏到托盘">×</button>
+    </div>
+  </div>
+
+  <main class="app-shell">
+    <aside class="sidebar">
+      <div class="brand-block">
+        <img class="brand-icon" src="../assets/icon.svg" alt="沟通助手" />
+        <div><div class="brand-name">沟通助手</div><div class="brand-caption">外贸沟通 AI 助手</div></div>
+      </div>
+      <nav class="nav-list" aria-label="主导航">
+        <button class="nav-item active" data-view="assistant"><span class="nav-glyph">✦</span><span>沟通助手</span></button>
+        <button class="nav-item" data-view="history"><span class="nav-glyph">◷</span><span>历史记录</span></button>
+        <button class="nav-item" data-view="skills"><span class="nav-glyph">▦</span><span>Skills</span></button>
+        <button class="nav-item" data-view="settings"><span class="nav-glyph">⚙</span><span>设置</span></button>
+      </nav>
+      <div class="sidebar-footer">
+        <button id="btnAlwaysOnTop" class="soft-btn full"><span>⌖</span><span>保持悬浮</span><span id="topState" class="state-dot"></span></button>
+        <button id="btnCompact" class="soft-btn full"><span>↔</span><span>小窗口模式</span></button>
+        <div class="shortcut-hint"><kbd>Ctrl</kbd><span>+</span><kbd>Shift</kbd><span>+</span><kbd>Space</kbd><br />快速显示 / 隐藏</div>
+      </div>
+    </aside>
+
+    <section class="content">
+      <section id="viewAssistant" class="view active-view">
+        <header class="page-header">
+          <div><p class="eyebrow">SMART COMMUNICATION</p><h1>让每一次沟通，都有合适的回应</h1><p class="page-subtitle">从当前聊天中识别内容，翻译上下文，并给出可以直接使用的回复。</p></div>
+          <div class="header-status"><span id="serviceDot" class="status-dot muted"></span><span id="serviceStatus">未连接模型</span></div>
+        </header>
+
+        <section class="mode-strip panel" aria-label="沟通模式">
+          <div class="mode-strip-title"><span class="mode-icon">◈</span><div><span class="panel-kicker">CURRENT MODE</span><strong>当前沟通模式</strong><small id="modeSummary">主 Skill + 辅助 Skill</small></div></div>
+          <select id="modeSelect" aria-label="选择沟通模式"></select>
+          <button id="btnManageModes" class="outline-btn" type="button">管理模式</button>
+        </section>
+
+        <section class="quick-actions" aria-label="快捷操作">
+          <button id="btnCapture" class="action-card primary"><span class="action-icon">▣</span><span><strong>识别当前聊天</strong><small>读取剪贴板或选择窗口截图</small></span><b>⌘</b></button>
+          <button id="btnAutoCapture" class="action-card auto-card"><span class="action-icon">◉</span><span><strong>自动识别</strong><small>选择聊天窗口后自动检测变化</small></span><b>→</b></button>
+          <button id="btnTranslate" class="action-card"><span class="action-icon">↔</span><span><strong>翻译内容</strong><small>保留语气和关键数字</small></span><b>→</b></button>
+          <button id="btnReply" class="action-card"><span class="action-icon">✦</span><span><strong>生成回复</strong><small>简短、正式、谈判三种版本</small></span><b>→</b></button>
+          <button id="btnOptimize" class="action-card"><span class="action-icon">✎</span><span><strong>优化草稿</strong><small>把你的草稿变得更自然</small></span><b>→</b></button>
+        </section>
+
+        <section class="workspace-grid">
+          <div class="panel input-panel">
+            <div class="panel-heading"><div><span class="panel-kicker">01 / CONTEXT</span><h2>聊天内容</h2></div><button id="btnClear" class="text-btn">清空</button></div>
+            <textarea id="sourceText" placeholder="在聊天软件中复制消息，然后点击“识别当前聊天”；也可以直接粘贴到这里。" spellcheck="false"></textarea>
+            <div class="input-footer"><span id="charCount">0 字</span><button id="btnAnalyze" class="outline-btn">判断意图</button></div>
+            <div class="draft-box"><label for="draftText">我的回复草稿</label><textarea id="draftText" placeholder="如果你已经写了一段回复，可以放在这里让 AI 优化。" spellcheck="false"></textarea></div>
+          </div>
+          <div class="panel result-panel">
+            <div class="panel-heading"><div><span class="panel-kicker">02 / OUTPUT</span><h2>助手建议</h2></div><span id="outputBadge" class="badge">等待内容</span></div>
+            <div class="result-block"><div class="result-label">翻译</div><div id="translationOutput" class="result-text muted-text">识别聊天后，这里会显示中文翻译。</div></div>
+            <div class="intent-row"><div><span class="result-label">沟通判断</span><strong id="intentOutput">尚未分析</strong></div><div><span class="result-label">风险提示</span><strong id="riskOutput">—</strong></div></div>
+            <div class="reply-list" id="replyList"><div class="empty-replies">点击“生成回复”，这里会出现可以直接复制的版本。</div></div>
+            <div class="output-footer"><button id="btnCopy" class="outline-btn" disabled>复制选中内容</button></div>
+          </div>
+        </section>
+        <div id="toast" class="toast" role="status"></div>
+      </section>
+
+      <section id="viewHistory" class="view"><header class="page-header compact-header"><div><p class="eyebrow">LOCAL HISTORY</p><h1>历史记录</h1><p class="page-subtitle">默认只保存在本机；第一版不上传聊天记录。</p></div></header><div class="panel empty-panel"><div class="empty-icon">◷</div><h2>还没有历史记录</h2><p>完成一次翻译或回复后，可以在这里查看最近结果。</p></div></section>
+
+      <section id="viewSkills" class="view"><header class="page-header compact-header"><div><p class="eyebrow">SKILL ROUTING</p><h1>Skills 管理</h1><p class="page-subtitle">先选择沟通模式，再为每个模式指定一个主 Skill 和一个辅助 Skill。没有被选中的 Skill 不会参与当前回复。</p></div><div class="header-actions"><button id="btnAddMode" class="outline-btn">＋ 新增模式</button><button id="btnImportSkill" class="primary-btn">＋ 导入 SKILL.md</button></div></header><section class="panel mode-management"><div class="panel-heading"><div><span class="panel-kicker">MODE PROFILES</span><h2>沟通模式</h2></div><span class="badge">主 + 辅</span></div><div id="modeList" class="mode-list"></div></section><section class="skill-section"><div class="section-heading"><div><span class="panel-kicker">SKILL LIBRARY</span><h2>Skill 库</h2></div><span class="section-hint">可导入新的 SKILL.md</span></div><div id="skillsList" class="skill-list"></div></section></section>
+
+        <section id="viewSettings" class="view"><header class="page-header compact-header"><div><p class="eyebrow">LOCAL SETTINGS</p><h1>设置</h1><p class="page-subtitle">API Key 只保存在本机安全存储中，不会显示在页面上。</p></div></header><div class="settings-grid"><form id="providerForm" class="panel settings-panel"><div class="panel-heading"><div><span class="panel-kicker">MODEL SERVICE</span><h2>模型服务</h2></div><span id="keyState" class="badge">未配置</span></div><label>服务名称<input id="providerName" type="text" value="主力模型" /></label><label>接口地址<input id="providerBaseUrl" type="url" value="https://api.openai.com/v1" /></label><label>模型名称<input id="providerModel" type="text" value="gpt-4o-mini" /></label><label>API 路径<input id="providerEndpoint" type="text" value="/chat/completions" /></label><label>API Key<input id="providerApiKey" type="password" placeholder="已配置时留空即可保留" autocomplete="off" /></label><div class="form-actions"><button type="button" id="btnTestProvider" class="outline-btn">测试连接</button><button type="submit" class="primary-btn">保存配置</button></div><p id="providerMessage" class="form-message"></p></form><form id="jevForm" class="panel settings-panel"><div class="panel-heading"><div><span class="panel-kicker">JUDGMENT SERVICE</span><h2>Jev 判断</h2></div><span id="jevState" class="badge">未启用</span></div><label class="checkbox-label"><input id="jevEnabled" type="checkbox" />启用 Jev 进行意图、风险和回复策略判断</label><label>Jev 地址<input id="jevBaseUrl" type="url" value="https://api.typesafe.ai" /></label><label>Jev 模型<input id="jevModel" type="text" value="jev-latest" /></label><label>Jev API Key<input id="jevApiKey" type="password" placeholder="已配置时留空即可保留" autocomplete="off" /></label><div class="form-actions"><button type="button" id="btnTestJev" class="outline-btn">测试判断</button><button type="submit" class="primary-btn">保存 Jev</button></div><p id="jevMessage" class="form-message"></p></form><div class="panel settings-panel"><div class="panel-heading"><div><span class="panel-kicker">PRIVACY</span><h2>隐私与快捷方式</h2></div></div><div class="setting-note"><span class="note-icon">⌁</span><div><strong>自动识别默认关闭</strong><p>只有你点“自动识别”并选定窗口后，才会检测画面变化；不会自动发送整块桌面。</p></div></div><div class="setting-note"><span class="note-icon">↗</span><div><strong>手动回填</strong><p>复制结果后，请在目标聊天框中手动粘贴并确认；当前版本不会自动发送消息。</p></div></div><div class="setting-note"><span class="note-icon">⌘</span><div><strong>全局快捷键</strong><p>Ctrl + Shift + Space 显示或隐藏助手。</p></div></div></div></div></section>
+    </section>
+  </main>
+  <div id="captureModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="captureTitle">
+    <div class="modal-card">
+      <div class="modal-header"><div><p class="eyebrow">SCREEN CAPTURE</p><h2 id="captureTitle">选择需要识别的窗口</h2></div><button id="btnCloseCapture" class="modal-close" aria-label="关闭">×</button></div>
+      <p id="captureHelp" class="modal-help">只在你点击窗口后读取当前画面，截图仅用于本次识别，不会自动保存。</p>
+      <div id="captureSourceList" class="capture-source-list"><div class="empty-replies">正在读取可用窗口…</div></div>
+    </div>
+  </div>
+  <script src="./renderer.js"></script>
+</body>
+</html>
+
+\n

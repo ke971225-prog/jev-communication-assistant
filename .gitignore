@@ -1,0 +1,15 @@
+node_modules/
+release/
+data/
+_QA/
+.env
+.env.*
+!.env.example
+*.log
+*.asar
+*.exe
+*.lnk
+.DS_Store
+Thumbs.db
+.learnings/
+.npm-cache/
